@@ -1,6 +1,5 @@
 import java.util.*;
-import java.io.*;
-import java.math.*;
+
 
 /**
  * catch up and win
@@ -11,7 +10,6 @@ static Maze m = new Maze();
              
 
 
-            Integer[] cost = new Integer[100];
             char[][] grid = new char[10][10];
  ;
          
@@ -69,9 +67,9 @@ static Maze m = new Maze();
     }
 }
 
-//QItem je klasa za poziciju, i pamcenje prethodnih cvorova za BFS rekonstrukciju puta
+//Predmet je klasa za poziciju, i pamcenje prethodnih cvorova za BFS rekonstrukciju puta
 
-class QItem {
+class Predmet {
   int row;
   int col;
   int dist;
@@ -79,7 +77,7 @@ class QItem {
 
 
 
-    public QItem(int row, int col, int dist) 
+    public Predmet(int row, int col, int dist) 
   {
    
     this.row = row;
@@ -89,7 +87,7 @@ class QItem {
    
   }
 
-    public QItem(int row, int col, int dist,  List<Character> putanja) 
+    public Predmet(int row, int col, int dist,  List<Character> putanja) 
   {
 
    this.putanja = putanja;
@@ -111,13 +109,10 @@ class Maze {
           
 public  int minDistance( int enmX, int enmY, int k)
   {
-     
-     this.grid[enmX][enmY] = 'E'; // new target
 
 
-QItem enm = new QItem(enmX, enmY, 0);
 
-    QItem source = new QItem(0, 0, 0);
+    Predmet source = new Predmet(0, 0, 0);
 
         boolean[][] visited
       = new boolean[grid.length][grid[0].length];
@@ -125,8 +120,7 @@ QItem enm = new QItem(enmX, enmY, 0);
 
     visited[source.row][source.col] = true;
 
-    // To keep track of visited QItems. Marking
-    // blocked cells as visited.
+    // Pratimo koja polja smo posetili
 
     
     firstLoop:
@@ -134,11 +128,16 @@ QItem enm = new QItem(enmX, enmY, 0);
       for (int j = 0; j < grid[i].length; j++)
       {
           
-         if(grid[i][j]=='*'){
-             visited[i][j] = true;
+         if(grid[i][j]=='*'){       
+             visited[i][j] = true;   //zidove obelezavamo kao posecena polja, kako ne bi smo isli na njih
          }
          
-        // Finding source
+           if(grid[i][j]=='E'){  //brisemo prethdonu lokaciju protivnika
+           grid[i][j]='-';
+         }
+         
+
+        // Nalazimo gde smo
         if (grid[i][j] == 'P') {
           source.row = i;
           source.col = j;
@@ -150,34 +149,37 @@ QItem enm = new QItem(enmX, enmY, 0);
     }
  
 
-    // applying BFS on matrix cells starting from source
-    Queue<QItem> queue = new LinkedList<>();
-    queue.add(new QItem(source.row, source.col, 0));
+     
+     this.grid[enmY][enmX] = 'E'; // new target
+
+    // zapocinjemo BFS od cvora 'P'
+    Queue<Predmet> queue = new LinkedList<>();
+    queue.add(new Predmet(source.row, source.col, 0));
 
   
 
     while (queue.isEmpty() == false) {
 
 
-      QItem p = queue.remove();
+      Predmet p = queue.remove();
 
     
-      // moving up
+      // gore
       if (isValid(p.row - 1, p.col, grid, visited)) {
           List<Character>temp = new ArrayList<Character>(p.putanja);
            temp.add('U');
-        queue.add(new QItem(p.row - 1, p.col,
+        queue.add(new Predmet(p.row - 1, p.col,
                             p.dist + 1, temp ));
         visited[p.row - 1][p.col] = true;
 
        
       }
 
-      // moving down
+      // dole
       if (isValid(p.row + 1, p.col, grid, visited)) {
           List<Character>temp = new ArrayList<Character>(p.putanja);
           temp.add('D');
-        queue.add(new QItem(p.row + 1, p.col,
+        queue.add(new Predmet(p.row + 1, p.col,
                             p.dist + 1,  temp));
         visited[p.row + 1][p.col] = true;
      
@@ -185,11 +187,11 @@ QItem enm = new QItem(enmX, enmY, 0);
         
       }
 
-      // moving left
+      // levo
       if (isValid(p.row, p.col - 1, grid, visited)) {
            List<Character>temp = new ArrayList<Character>(p.putanja);
             temp.add('L');
-        queue.add(new QItem(p.row, p.col - 1,
+        queue.add(new Predmet(p.row, p.col - 1,
                             p.dist + 1, temp));
         visited[p.row][p.col - 1] = true;
         
@@ -198,12 +200,12 @@ QItem enm = new QItem(enmX, enmY, 0);
    
       }
 
-      // moving right
+      // desno
       if (isValid(p.row, p.col + 1, grid,
                   visited)) {
             List<Character>temp = new ArrayList<Character>(p.putanja);
            temp.add('R');
-        queue.add(new QItem(p.row, p.col + 1,
+        queue.add(new Predmet(p.row, p.col + 1,
                             p.dist + 1, temp));
         visited[p.row][p.col + 1] = true;
       
@@ -214,9 +216,12 @@ QItem enm = new QItem(enmX, enmY, 0);
 
         // Destination found;
       if (grid[p.row][p.col] == 'E'){
+             System.err.println(Arrays.deepToString(this.grid));
         grid[source.row][source.col] = '-';    //uslovi kojima zavrsavamo metod - brisemo staru poziciju, dodajemo novu, brisemo staru poziciju sus-mana
           this.grid[p.row][p.col] = 'P';
-        this.grid[enm.row][enm.col] = '-';
+
+       
+    
         
      reconstructPath(p.putanja, p.dist, k);
        
@@ -253,7 +258,7 @@ public void reconstructPath(List<Character> putanja, int duzina, int k ){
 for(int i = 0; i<putanja.size(); i++){
   
     k--;
-    System.err.print("The man will move in  : " + k + " actions");
+    System.err.print("Sus man ce se pomeriti  : " + k + " actions");
    
 
     System.out.println(putanja.get(i));
