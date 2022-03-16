@@ -1,0 +1,280 @@
+import java.util.*;
+import java.io.*;
+import java.math.*;
+
+/**
+ * catch up and win
+ **/
+class Player {
+static Maze m = new Maze();
+    public static void main(String args[]) {
+             
+
+
+            Integer[] cost = new Integer[100];
+            char[][] grid = new char[10][10];
+ ;
+         
+        Scanner in = new Scanner(System.in);
+        int K = in.nextInt(); // representing after how many turns the sus man will make another move
+        if (in.hasNextLine()) {
+              in.nextLine();
+              
+        }
+        for (int i = 0; i < 10; i++) {
+            String s = in.nextLine(); // the map
+
+
+            for(int b = 0; b<s.length(); b++){
+
+             
+                 grid[i][b] = s.charAt(b);
+
+                
+
+            }
+
+
+
+        }
+   
+    m.grid = grid;
+    
+        // game loop
+        while (true) {
+            int eneY = in.nextInt(); // the sus man's coordinate,two integers separated by space in a single line
+            int eneX = in.nextInt(); // the sus man's coordinate,two integers separated by space in a single line
+            
+         System.err.println("Ucitao sam :" + eneY);
+       
+          synchronized (m.grid){
+            
+ m.minDistance(eneX, eneY, K);
+
+}
+
+           
+          if (in.hasNextLine()) {
+              in.nextLine();
+              
+              
+        }   
+            
+        
+   
+
+        }
+
+
+    }
+}
+
+//QItem je klasa za poziciju, i pamcenje prethodnih cvorova za BFS rekonstrukciju puta
+
+class QItem {
+  int row;
+  int col;
+  int dist;
+  List<Character> putanja = new ArrayList<>();
+
+
+
+    public QItem(int row, int col, int dist) 
+  {
+   
+    this.row = row;
+    this.col = col;
+    this.dist = dist;
+   
+   
+  }
+
+    public QItem(int row, int col, int dist,  List<Character> putanja) 
+  {
+
+   this.putanja = putanja;
+ 
+    this.row = row;
+    this.col = col;
+    this.dist = dist;
+  }
+
+  public String toString(){
+      return "row:"+ this.row + " col: " + this.col;
+  }
+}
+
+class Maze {
+
+    char[][] grid;
+
+          
+public  int minDistance( int enmX, int enmY, int k)
+  {
+     
+     this.grid[enmX][enmY] = 'E';
+     System.err.print("pa znaci "+ enmX + " i "+ enmY);
+     System.err.println(Arrays.deepToString(grid));
+
+QItem enm = new QItem(enmX, enmY, 0);
+
+    QItem source = new QItem(0, 0, 0);
+
+        boolean[][] visited
+      = new boolean[grid.length][grid[0].length];
+
+
+    visited[source.row][source.col] = true;
+
+    // To keep track of visited QItems. Marking
+    // blocked cells as visited.
+
+    
+    firstLoop:
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[i].length; j++)
+      {
+          
+         if(grid[i][j]=='*'){
+             visited[i][j] = true;
+         }
+         
+        // Finding source
+        if (grid[i][j] == 'P') {
+          source.row = i;
+          source.col = j;
+     
+       
+          break firstLoop;
+        }
+      }
+    }
+    System.err.println("Source je " + source.row + " " +source.col);
+
+    // applying BFS on matrix cells starting from source
+    Queue<QItem> queue = new LinkedList<>();
+    queue.add(new QItem(source.row, source.col, 0));
+
+  
+
+    while (queue.isEmpty() == false) {
+
+     
+     System.err.println("Sta je u queue: " + queue.toString());
+      QItem p = queue.remove();
+
+    
+      // moving up
+      if (isValid(p.row - 1, p.col, grid, visited)) {
+          List<Character>temp = new ArrayList<Character>(p.putanja);
+           temp.add('U');
+        queue.add(new QItem(p.row - 1, p.col,
+                            p.dist + 1, temp ));
+        visited[p.row - 1][p.col] = true;
+
+       
+      }
+
+      // moving down
+      if (isValid(p.row + 1, p.col, grid, visited)) {
+          List<Character>temp = new ArrayList<Character>(p.putanja);
+          temp.add('D');
+        queue.add(new QItem(p.row + 1, p.col,
+                            p.dist + 1,  temp));
+        visited[p.row + 1][p.col] = true;
+     
+   
+        
+      }
+
+      // moving left
+      if (isValid(p.row, p.col - 1, grid, visited)) {
+           List<Character>temp = new ArrayList<Character>(p.putanja);
+            temp.add('L');
+        queue.add(new QItem(p.row, p.col - 1,
+                            p.dist + 1, temp));
+        visited[p.row][p.col - 1] = true;
+        
+
+     
+   
+      }
+
+      // moving right
+      if (isValid(p.row, p.col + 1, grid,
+                  visited)) {
+            List<Character>temp = new ArrayList<Character>(p.putanja);
+           temp.add('R');
+        queue.add(new QItem(p.row, p.col + 1,
+                            p.dist + 1, temp));
+        visited[p.row][p.col + 1] = true;
+      
+     
+   
+       
+      }
+
+        // Destination found;
+      if (grid[p.row][p.col] == 'E'){
+        grid[source.row][source.col] = '-';
+          this.grid[p.row][p.col] = 'P';
+        this.grid[enm.row][enm.col] = '-';
+        
+     reconstructPath(p.putanja, p.dist, k);
+       
+      
+        
+   
+        return p.dist;
+      }
+    }
+
+    
+    return -1;
+  }
+
+  // checking where it's valid or not
+  private boolean isValid(int x, int y,
+                                 char[][] grid,
+                                 boolean[][] visited)
+  {
+    if (x >= 0 && y >= 0 && x < grid.length
+        && y < grid[0].length && grid[x][y] != '*'
+        && visited[x][y] == false) {
+      return true;
+    }
+    System.err.println("Da li se ikad ovo izvrsi?");
+    return false;
+  }
+
+public void reconstructPath(List<Character> putanja, int duzina, int k ){
+
+
+
+
+for(int i = 0; i<putanja.size(); i++){
+  
+    k--;
+    System.err.print("Covek ce se pomeriti za : " + k);
+   
+
+    System.out.println(putanja.get(i));
+    
+ 
+
+ 
+}
+
+
+
+  
+ 
+
+}
+
+public void obrisiPozicijuE(int x, int y){
+    this.grid[x][y]  = '-';
+}
+}
+
+
