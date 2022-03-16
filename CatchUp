@@ -214,7 +214,7 @@ QItem enm = new QItem(enmX, enmY, 0);
 
         // Destination found;
       if (grid[p.row][p.col] == 'E'){
-        grid[source.row][source.col] = '-';
+        grid[source.row][source.col] = '-';    //uslovi kojima zavrsavamo metod - brisemo staru poziciju, dodajemo novu, brisemo staru poziciju sus-mana
           this.grid[p.row][p.col] = 'P';
         this.grid[enm.row][enm.col] = '-';
         
