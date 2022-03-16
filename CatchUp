@@ -254,19 +254,7 @@ public void reconstructPath(List<Character> putanja, int duzina, int k ){
 
 
 
-
-for(int i = 0; i<putanja.size(); i++){
-  
-    k--;
-    System.err.print("Sus man ce se pomeriti  : " + k + " actions");
-   
-
-    System.out.println(putanja.get(i));
-    
- 
-
- 
-}
+putanja.forEach(element -> System.out.println(element));  //stampamo komande pomeranja
 
 
 
