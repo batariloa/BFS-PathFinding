@@ -73,7 +73,7 @@ class Predmet {
   int row;
   int col;
   int dist;
-  List<Character> putanja = new ArrayList<>(); //remembers the path to the current node
+  List<Character> putanja = new ArrayList<>(); //Pamti trenutni put do ovog čvora
 
 
 
@@ -183,7 +183,6 @@ public  int minDistance( int enmX, int enmY, int k)
                             p.dist + 1,  temp));
         visited[p.row + 1][p.col] = true;
      
-   
         
       }
 
@@ -195,7 +194,6 @@ public  int minDistance( int enmX, int enmY, int k)
                             p.dist + 1, temp));
         visited[p.row][p.col - 1] = true;
         
-
      
    
       }
@@ -209,12 +207,11 @@ public  int minDistance( int enmX, int enmY, int k)
                             p.dist + 1, temp));
         visited[p.row][p.col + 1] = true;
       
-     
    
        
       }
 
-        // Destination found;
+        // neprijatelj pronadjen
       if (grid[p.row][p.col] == 'E'){
              System.err.println(Arrays.deepToString(this.grid));
         grid[source.row][source.col] = '-';    //uslovi kojima zavrsavamo metod - brisemo staru poziciju, dodajemo novu, brisemo staru poziciju sus-mana
@@ -223,7 +220,7 @@ public  int minDistance( int enmX, int enmY, int k)
        
     
         
-     reconstructPath(p.putanja, p.dist, k);
+     reconstructPath(p.putanja);
        
       
         
@@ -236,7 +233,7 @@ public  int minDistance( int enmX, int enmY, int k)
     return -1;
   }
 
-  // checking where it's valid or not
+  // provera da li je validno
   private boolean isValid(int x, int y,
                                  char[][] grid,
                                  boolean[][] visited)
@@ -250,7 +247,7 @@ public  int minDistance( int enmX, int enmY, int k)
     return false;
   }
 
-public void reconstructPath(List<Character> putanja, int duzina, int k ){
+public void reconstructPath(List<Character> putanja){
 
 
 
