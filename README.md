@@ -24,7 +24,7 @@ To end a turn, you should output an uppercase character from 'U', 'D', 'L', 'R' 
 # My Solution
 
 My goal was to solve the given problem using the Breadth First Search (BFS) algorithm. We are given 10 strings that represent the map, each containting 10 characters. 
-We first take these strings, and transform them into a 2D matrix, which will be an internal representation of the map. We will use another 2D array to keep track of visited fields.
+We first take these strings, and transform them into a 2D array, which will serve as an internal representation of the map. We will use another 2D array to keep track of visited fields.
 We can mark the areas which represent walls as visited, therefore the algorithm will not walk us into these areas.
 
 The algorithm will find it's neighbours (fields it can go to next) using 4 methods: for moving up, down, left and right. 
