@@ -94,9 +94,9 @@ m.sledeciKoraci.remove(0);
     }
 }
 
-//Predmet je klasa za poziciju, i pamcenje prethodnih cvorova za BFS rekonstrukciju puta
+//Location je klasa za poziciju, i pamcenje prethodnih cvorova za BFS rekonstrukciju puta
 
-class Predmet {
+class Location {
   int row;
   int col;
 
@@ -104,7 +104,7 @@ class Predmet {
 
 
 
-    public Predmet(int row, int col) 
+    public Location(int row, int col) 
   {
    
     this.row = row;
@@ -114,7 +114,7 @@ class Predmet {
    
   }
 
-    public Predmet(int row, int col,  List<Character> putanja) 
+    public Location(int row, int col,  List<Character> putanja) 
   {
 
    this.putanja = putanja;
@@ -133,7 +133,7 @@ class Maze {
     int eneX;
     int eneY;
     List<Character> sledeciKoraci = new ArrayList<>();
-        Predmet source = new Predmet(0, 0);
+        Location source = new Location(0, 0);
 
           
 public  int minDistance( )
@@ -151,22 +151,22 @@ sledeciKoraci= new ArrayList<>();
 
 
     // zapocinjemo BFS od cvora 'P'
-    Queue<Predmet> queue = new LinkedList<>();
-    queue.add(new Predmet(source.row, source.col));
+    Queue<Location> queue = new LinkedList<>();
+    queue.add(new Location(source.row, source.col));
 
   
 
     while (queue.isEmpty() == false) {
 
 
-      Predmet p = queue.remove();
+      Location p = queue.remove();
 
     
       // gore
       if (isValid(p.row - 1, p.col, grid, visited)) {
           List<Character>temp = new ArrayList<Character>(p.putanja);
            temp.add('U');
-        queue.add(new Predmet(p.row - 1, p.col,
+        queue.add(new Location(p.row - 1, p.col,
                             temp ));
         visited[p.row - 1][p.col] = true;
 
@@ -177,7 +177,7 @@ sledeciKoraci= new ArrayList<>();
       if (isValid(p.row + 1, p.col, grid, visited)) {
           List<Character>temp = new ArrayList<Character>(p.putanja);
           temp.add('D');
-        queue.add(new Predmet(p.row + 1, p.col,
+        queue.add(new Location(p.row + 1, p.col,
                              temp));
         visited[p.row + 1][p.col] = true;
      
@@ -188,7 +188,7 @@ sledeciKoraci= new ArrayList<>();
       if (isValid(p.row, p.col - 1, grid, visited)) {
            List<Character>temp = new ArrayList<Character>(p.putanja);
             temp.add('L');
-        queue.add(new Predmet(p.row, p.col - 1,
+        queue.add(new Location(p.row, p.col - 1,
                             temp));
         visited[p.row][p.col - 1] = true;
         
@@ -201,7 +201,7 @@ sledeciKoraci= new ArrayList<>();
                   visited)) {
             List<Character>temp = new ArrayList<Character>(p.putanja);
            temp.add('R');
-        queue.add(new Predmet(p.row, p.col + 1,
+        queue.add(new Location(p.row, p.col + 1,
                              temp));
         visited[p.row][p.col + 1] = true;
       
