@@ -1,7 +1,6 @@
-# PathFinding
+# PathFinding - BFS Search in a 2D Grid - Catching up after a bad guy 
 
-Solution for the problem found on:
-https://www.codingame.com/ide/puzzle/catching-up
+Solution for the problem: [Catching Up](https://www.codingame.com/ide/puzzle/catching-up)
 
 # Rules
 
