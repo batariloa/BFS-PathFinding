@@ -37,7 +37,8 @@ The method for moving up:
    
         List<Character> temp = new ArrayList<Character>(p.putanja); 
         temp.add('U');                                    // letter representing the required movement to get to this area
-        queue.add(new Predmet(p.row - 1, p.col, temp));  //adding new Node to the queue, which containts the shortest path to reach it, and it's coordinates
+        queue.add(new Location(p.row - 1, p.col, temp));  //adding new Node to the queue, which containts the shortest path to reach it, and
+                                                          // it's coordinates
         visited[p.row - 1][p.col] = true;                //setting this Node as visited
        
       }
