@@ -5,88 +5,83 @@ import java.util.*;
  * catch up and win
  **/
 class Player {
-static Maze m = new Maze();
+    static Maze m = new Maze();
     public static void main(String args[]) {
-             
 
 
-            char[][] grid = new char[10][10];
- ;
-         
+
+        char[][] grid = new char[10][10];
+
         Scanner in = new Scanner(System.in);
-        int K = in.nextInt(); // representing after how many turns the sus man will make another move
-        if (in.hasNextLine()) {
-              in.nextLine();
-              
+
+        if ( in .hasNextLine()) { in .nextLine();
+
         }
         for (int i = 0; i < 10; i++) {
-            String s = in.nextLine(); // the map
+            String s = in .nextLine(); // the map
 
 
-            for(int b = 0; b<s.length(); b++){
+            for (int b = 0; b < s.length(); b++) {
 
-             
-                 grid[i][b] = s.charAt(b);
-                 if(grid[i][b] == 'P'){
-                     m.source.row=i;
-                     m.source.col = b;
-                 }
 
-                
+                grid[i][b] = s.charAt(b);
+                if (grid[i][b] == 'P') {
+                    m.source.row = i;
+                    m.source.col = b;
+                }
+
+
 
             }
 
 
 
         }
-   
-    m.grid = grid;
-    
+
+        m.grid = grid;
+
         // game loop
         while (true) {
-            int eneY = in.nextInt(); // the sus man's coordinate,two integers separated by space in a single line
-            int eneX = in.nextInt(); // the sus man's coordinate,two integers separated by space in a single line
-            
-    
-       
-       if(m.eneX != eneX || m.eneY!= eneY){
-      
-            m.eneX = eneX;
-            m.eneY = eneY;
-            
- m.minDistance();
+            int eneY = in .nextInt(); // the sus man's coordinate,two integers separated by space in a single line
+            int eneX = in .nextInt(); // the sus man's coordinate,two integers separated by space in a single line
 
 
-       }
+
+            if (m.eneX != eneX || m.eneY != eneY) {
+                System.err.println(" KOORD " + eneY + " e " + eneX);
+                m.eneX = eneX;
+                m.eneY = eneY;
+
+                m.minDistance();
 
 
-Character pozicija =  m.sledeciKoraci.get(0);
-m.sledeciKoraci.remove(0);
-    
-    switch(pozicija){
+            }
 
-        case 'U':
-        m.source.row -= 1;
-        
-        break;
-        case 'D':
-        m.source.row += 1;
-        break;
-        case 'L':
-        m.source.col -=1;
-        break;
-        case 'R':
-        m.source.col +=1;
-        break;
-    }
 
-    System.out.println(pozicija);
-    System.err.println(m.sledeciKoraci.toString());
-    System.err.println("A nalazim se na " + m.source.row + " i " + m.source.col);
-         
-        
-  
-   
+            Character pozicija = m.sledeciKoraci.get(0);
+            m.sledeciKoraci.remove(0);
+
+            switch (pozicija) {
+
+                case 'U':
+                    m.source.row -= 1;
+
+                    break;
+                case 'D':
+                    m.source.row += 1;
+                    break;
+                case 'L':
+                    m.source.col -= 1;
+                    break;
+                case 'R':
+                    m.source.col += 1;
+                    break;
+            }
+
+            System.out.println(pozicija);
+
+
+
 
         }
 
@@ -97,32 +92,30 @@ m.sledeciKoraci.remove(0);
 //Location je klasa za poziciju, i pamcenje prethodnih cvorova za BFS rekonstrukciju puta
 
 class Location {
-  int row;
-  int col;
+    int row;
+    int col;
 
-  List<Character> putanja = new ArrayList<>(); //Pamti trenutni put do ovog čvora
+    List < Character > currentPath = new ArrayList < > (); //Pamti trenutni put do ovog čvora
 
 
 
-    public Location(int row, int col) 
-  {
-   
-    this.row = row;
-    this.col = col;
+    public Location(int row, int col) {
 
-   
-   
-  }
+        this.row = row;
+        this.col = col;
 
-    public Location(int row, int col,  List<Character> putanja) 
-  {
 
-   this.putanja = putanja;
- 
-    this.row = row;
-    this.col = col;
 
-  }
+    }
+
+    public Location(int row, int col, List < Character > currentPath) {
+
+        this.currentPath = currentPath;
+
+        this.row = row;
+        this.col = col;
+
+    }
 
 
 }
@@ -130,123 +123,111 @@ class Location {
 class Maze {
 
     char[][] grid;
-    int eneX;
-    int eneY;
-    List<Character> sledeciKoraci = new ArrayList<>();
-        Location source = new Location(0, 0);
+    int eneX = -1;
+    int eneY = -1;
+    List < Character > sledeciKoraci;
+    Location source = new Location(99999, 9999);
+    Queue < Location > queue;
+    boolean[][] visited;
+    boolean reverse = false; //obrcemo redosled provere polja, kako ne bi smo zauvek jurili AI u krug
 
-          
-public  int minDistance( )
-  {
-
-
-
-sledeciKoraci= new ArrayList<>();
-        boolean[][] visited
-      = new boolean[grid.length][grid[0].length];
-
-
-    visited[source.row][source.col] = true;
+    public int minDistance() {
 
 
 
-    // zapocinjemo BFS od cvora 'P'
-    Queue<Location> queue = new LinkedList<>();
-    queue.add(new Location(source.row, source.col));
+        sledeciKoraci = new ArrayList < > ();
 
-  
-
-    while (queue.isEmpty() == false) {
+        visited = new boolean[grid.length][grid[0].length]; //svaki put osvezavamo niz posecenih polja
 
 
-      Location p = queue.remove();
+        visited[source.row][source.col] = true; // obelezavamo mesto gde se nalazimo kao poseceno
 
-    
-      // gore
-      if (isValid(p.row - 1, p.col, grid, visited)) {
-          List<Character>temp = new ArrayList<Character>(p.putanja);
-           temp.add('U');
-        queue.add(new Location(p.row - 1, p.col,
-                            temp ));
-        visited[p.row - 1][p.col] = true;
+        // zapocinjemo BFS od cvora 'P'
+        queue = new LinkedList < > ();
+        queue.add(new Location(source.row, source.col));
 
-       
-      }
 
-      // dole
-      if (isValid(p.row + 1, p.col, grid, visited)) {
-          List<Character>temp = new ArrayList<Character>(p.putanja);
-          temp.add('D');
-        queue.add(new Location(p.row + 1, p.col,
-                             temp));
-        visited[p.row + 1][p.col] = true;
-     
-        
-      }
 
-      // levo
-      if (isValid(p.row, p.col - 1, grid, visited)) {
-           List<Character>temp = new ArrayList<Character>(p.putanja);
-            temp.add('L');
-        queue.add(new Location(p.row, p.col - 1,
-                            temp));
-        visited[p.row][p.col - 1] = true;
-        
-     
-   
-      }
+        while (queue.isEmpty() == false) {
 
-      // desno
-      if (isValid(p.row, p.col + 1, grid,
-                  visited)) {
-            List<Character>temp = new ArrayList<Character>(p.putanja);
-           temp.add('R');
-        queue.add(new Location(p.row, p.col + 1,
-                             temp));
-        visited[p.row][p.col + 1] = true;
-      
-   
-       
-      }
 
-        // neprijatelj pronadjen
-      if (p.row == eneY && p.col == eneX){
+            Location p = queue.remove();
 
-             System.err.println(Arrays.deepToString(this.grid));
-      
-       
-    sledeciKoraci = p.putanja;
-        
-   
-      
-        
-   
-        return 1;
-      }
+
+
+            explore(p.row, p.col, p.currentPath);
+
+            // neprijatelj pronadjen
+            if (p.row == eneY && p.col == eneX) {
+
+                System.err.println(Arrays.deepToString(this.grid));
+
+
+                sledeciKoraci = p.currentPath;
+
+
+                return 1;
+            }
+        }
+
+
+        return -1;
     }
 
-    
-    return -1;
-  }
+    // provera da li je polje zid ili van granica
+    private boolean isValid(int x, int y,
 
-  // provera da li je polje zid ili van granica
-  private boolean isValid(int x, int y,
-                                 char[][] grid,
-                                 boolean[][] visited)
-  {
-    if (x >= 0 && y >= 0 && x < grid.length
-        && y < grid[0].length && grid[x][y] != '*'
-        && visited[x][y] == false) {
-      return true;
+        boolean[][] visited) {
+        if (x >= 0 && y >= 0 && x < grid.length &&
+            y < grid[0].length && grid[x][y] != '*' &&
+            visited[x][y] == false) {
+            return true;
+        }
+
+        return false;
     }
 
-    return false;
-  }
+
+    public void obrisiPozicijuE(int x, int y) {
+        this.grid[x][y] = '-';
+    }
 
 
-public void obrisiPozicijuE(int x, int y){
-    this.grid[x][y]  = '-';
+    public void explore(int row, int col, List < Character > currentPath) {
+
+
+        // U, D, L, R
+        List < Location > movements = Arrays.asList(new Location(row - 1, col), new Location(row + 1, col), new Location(row, col - 1), new Location(row, col + 1));
+        List < Character > komande = Arrays.asList('U', 'D', 'L', 'R');
+
+
+        if (reverse) {
+            Collections.reverse(movements);
+            Collections.reverse(komande);
+        }
+        for (int i = 0; i < movements.size(); i++) {
+
+
+
+            int rowPomeren = movements.get(i).row;
+            int colPomeren = movements.get(i).col;
+            char slovo = komande.get(i);
+
+            if (isValid(rowPomeren, colPomeren, visited)) {
+
+
+                List < Character > temp = new ArrayList < Character > (currentPath);
+                temp.add(slovo);
+                queue.add(new Location(rowPomeren, colPomeren,
+                    temp));
+                visited[rowPomeren][colPomeren] = true;
+            }
+
+
+
+        }
+        reverse = !reverse;
+
+
+    }
 }
-}
-
-
