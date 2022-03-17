@@ -43,7 +43,7 @@ class Player {
 
 
             if (m.eneX != eneX || m.eneY != eneY) {
-            
+
                 m.eneX = eneX;
                 m.eneY = eneY;
                 m.minDistance();
@@ -168,9 +168,7 @@ class Maze {
     }
 
     // provera da li je polje zid ili van granica
-    private boolean isValid(int x, int y,
-
-        boolean[][] visited) {
+    private boolean isValid(int x, int y) {
         if (x >= 0 && y >= 0 && x < grid.length &&
             y < grid[0].length && grid[x][y] != '*' &&
             visited[x][y] == false) {
@@ -206,7 +204,7 @@ class Maze {
             int colPomeren = movements.get(i).col;
             char slovo = komande.get(i);
 
-            if (isValid(rowPomeren, colPomeren, visited)) {
+            if (isValid(rowPomeren, colPomeren)) {
 
 
                 List < Character > temp = new ArrayList < Character > (currentPath);
