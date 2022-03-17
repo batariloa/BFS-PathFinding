@@ -30,11 +30,7 @@ class Player {
                     m.source.col = b;
                 }
 
-
-
             }
-
-
 
         }
 
@@ -46,14 +42,11 @@ class Player {
             int eneX = in .nextInt(); // the sus man's coordinate,two integers separated by space in a single line
 
 
-
             if (m.eneX != eneX || m.eneY != eneY) {
-                System.err.println(" KOORD " + eneY + " e " + eneX);
+            
                 m.eneX = eneX;
                 m.eneY = eneY;
-
                 m.minDistance();
-
 
             }
 
