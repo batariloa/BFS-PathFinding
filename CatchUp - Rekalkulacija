@@ -100,34 +100,32 @@ m.sledeciKoraci.remove(0);
 class Predmet {
   int row;
   int col;
-  int dist;
+
   List<Character> putanja = new ArrayList<>(); //Pamti trenutni put do ovog čvora
 
 
 
-    public Predmet(int row, int col, int dist) 
+    public Predmet(int row, int col) 
   {
    
     this.row = row;
     this.col = col;
-    this.dist = dist;
+
    
    
   }
 
-    public Predmet(int row, int col, int dist,  List<Character> putanja) 
+    public Predmet(int row, int col,  List<Character> putanja) 
   {
 
    this.putanja = putanja;
  
     this.row = row;
     this.col = col;
-    this.dist = dist;
+
   }
 
-  public String toString(){
-      return "row:"+ this.row + " col: " + this.col;
-  }
+
 }
 
 class Maze {
@@ -136,7 +134,7 @@ class Maze {
     int eneX;
     int eneY;
     List<Character> sledeciKoraci = new ArrayList<>();
-        Predmet source = new Predmet(0, 0, 0);
+        Predmet source = new Predmet(0, 0);
 
           
 public  int minDistance( )
@@ -177,7 +175,7 @@ sledeciKoraci= new ArrayList<>();
 
     // zapocinjemo BFS od cvora 'P'
     Queue<Predmet> queue = new LinkedList<>();
-    queue.add(new Predmet(source.row, source.col, 0));
+    queue.add(new Predmet(source.row, source.col));
 
   
 
@@ -192,7 +190,7 @@ sledeciKoraci= new ArrayList<>();
           List<Character>temp = new ArrayList<Character>(p.putanja);
            temp.add('U');
         queue.add(new Predmet(p.row - 1, p.col,
-                            p.dist + 1, temp ));
+                            temp ));
         visited[p.row - 1][p.col] = true;
 
        
@@ -203,7 +201,7 @@ sledeciKoraci= new ArrayList<>();
           List<Character>temp = new ArrayList<Character>(p.putanja);
           temp.add('D');
         queue.add(new Predmet(p.row + 1, p.col,
-                            p.dist + 1,  temp));
+                             temp));
         visited[p.row + 1][p.col] = true;
      
         
@@ -214,7 +212,7 @@ sledeciKoraci= new ArrayList<>();
            List<Character>temp = new ArrayList<Character>(p.putanja);
             temp.add('L');
         queue.add(new Predmet(p.row, p.col - 1,
-                            p.dist + 1, temp));
+                            temp));
         visited[p.row][p.col - 1] = true;
         
      
@@ -227,7 +225,7 @@ sledeciKoraci= new ArrayList<>();
             List<Character>temp = new ArrayList<Character>(p.putanja);
            temp.add('R');
         queue.add(new Predmet(p.row, p.col + 1,
-                            p.dist + 1, temp));
+                             temp));
         visited[p.row][p.col + 1] = true;
       
    
@@ -241,8 +239,7 @@ sledeciKoraci= new ArrayList<>();
        
     sledeciKoraci = p.putanja;
         
-     reconstructPath(sledeciKoraci);
-       
+   
       
         
    
@@ -268,17 +265,6 @@ sledeciKoraci= new ArrayList<>();
     return false;
   }
 
-public void reconstructPath(List<Character> putanja){
-
-
-
-
-
-
-  
- 
-
-}
 
 public void obrisiPozicijuE(int x, int y){
     this.grid[x][y]  = '-';
