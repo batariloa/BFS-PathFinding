@@ -24,26 +24,54 @@ To end a turn, you should output an uppercase character from 'U', 'D', 'L', 'R' 
 # My Solution
 
 My goal was to solve the given problem using the Breadth First Search (BFS) algorithm. We are given 10 strings that represent the map, each containting 10 characters. 
-We first take these strings, and transform them into a 2D array, which will serve as an internal representation of the map. We will use another 2D array to keep track of visited fields.
+We first take the provided strings, and transform them into a 2D array, which will serve as an internal representation of the map. We will use another 2D array to keep track of visited fields.
 We can mark the areas which represent walls as visited, therefore the algorithm will not walk us into these areas.
 
-The algorithm will find it's neighbours (fields it can go to next) using 4 methods: for moving up, down, left and right. 
-
-The method for moving up:
+The algorithm will find it's neighbours (fields it can go to next) using the explore method. The explore method will reverse the order of directions in which it explores. This way, we can avoid following the AI around in circles (Test 06 - Free Chase fails without reversal.).
+The explore method:
 ```
-  //moving up
-  
-   if (isValid(p.row - 1, p.col, grid, visited)) {       //checking if this field is a wall, or out of bounds
-   
-        List<Character> temp = new ArrayList<Character>(p.putanja); 
-        temp.add('U');                                    // letter representing the required movement to get to this area
-        queue.add(new Location(p.row - 1, p.col, temp));  //adding new Node to the queue, which containts the shortest path to reach it, and
-                                                          // it's coordinates
-        visited[p.row - 1][p.col] = true;                //setting this Node as visited
-       
-      }
+public void explore(int row, int col, List < Character > currentPath) {
+
+
+    // U, D, L, R
+    //We are adding the 4 possible movement directions into an array, so we can reverse their order in the next iteration
+
+    List < Location > movements = Arrays.asList(new Location(row - 1, col), new Location(row + 1, col), new Location(row, col - 1), new Location(row, col + 1));
+    List < Character > komande = Arrays.asList('U', 'D', 'L', 'R'); 
+
+
+    if (reverse) {                        //reversing the order of exploration every 2 iterations 
+        Collections.reverse(movements);
+        Collections.reverse(komande);
+    }
+    for (int i = 0; i < movements.size(); i++) {
+
+
+
+        int rowPomeren = movements.get(i).row;
+        int colPomeren = movements.get(i).col;
+        char slovo = komande.get(i);
+
+        if (isValid(rowPomeren, colPomeren, grid, visited)) {
+
+
+            List < Character > temp = new ArrayList < Character > (currentPath);
+            temp.add(slovo);
+            queue.add(new Location(rowPomeren, colPomeren,
+                temp));
+            visited[rowPomeren][colPomeren] = true;
+        }
+
+
+
+    }
+    reverse = !reverse;
+
+
+}
 
 ```
 
 Each time the location of the enemy (marked 'E), the BFS would recalculate the shortest path.
 During each iteration of the main Thread's while loop, our character takes one move, and recalculates the shortest path if needed. 
+ 
