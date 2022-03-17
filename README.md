@@ -71,6 +71,22 @@ public void explore(int row, int col, List < Character > currentPath) {
 }
 
 ```
+Before we add the explored location to the queue of fields we want to visit, we must check whether it is valid or not. Being valid means that we can step on it, therefore it must be in bounds of the map, and not a wall ('*');
+
+Here is the isValid() method:
+
+```
+  private boolean isValid(int x, int y) {
+      if (x >= 0 && y >= 0 && x < grid.length &&                //in bounds of the map
+          y < grid[0].length && grid[x][y] != '*' &&            //not a wall
+          visited[x][y] == false) {
+          return true;
+      }
+
+      return false;
+  }
+  
+```
 
 Each time the location of the enemy (marked 'E), the BFS would recalculate the shortest path.
 During each iteration of the main Thread's while loop, our character takes one move, and recalculates the shortest path if needed. 
